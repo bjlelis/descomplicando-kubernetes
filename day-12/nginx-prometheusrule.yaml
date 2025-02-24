@@ -1,0 +1,31 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: nginx-prometheus-rule
+  namespace: monitoring
+  labels:
+    app: nginx-prometheusrule
+    prometheus: k8s
+    role: alert-rules
+    app.kubernetes.io/name: kube-prometheus
+    app.kubernetes.io/part-of: kube-prometheus
+spec:
+  groups:
+  - name: nginx-prometheus-rule
+    rules: 
+    - alert: NginxDown
+      expr: nginx_up
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Nginx ESTÁ FORA"
+        description: "Nginx ESTÁ FORA POR MAIS DE 1 MINUTO"
+    - alert: NginxHighRequestRate
+      expr: rate(nginx_http_requests_total[5m]) > 100
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Nginx ESTÁ ALTO"
+        description: "Nginx ESTÁ ALTO POR MAIS DE 1 MINUTO"
