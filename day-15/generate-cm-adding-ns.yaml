@@ -1,0 +1,19 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: generate-configmap-for-namespace
+spec:
+  rules:
+    - name: generate-cm-adding-ns
+      match:
+        resources:
+          kinds:
+            - Namespace
+      generate:
+        kind: ConfigMap
+        name: default-configmap
+        namespace: "{{request.object.metadata.name}}"
+        data:
+          key1: "Giropops"
+          key2: "Strigus"
+          

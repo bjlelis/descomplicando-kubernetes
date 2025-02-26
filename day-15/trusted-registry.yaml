@@ -1,0 +1,20 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: ensure-images-from-trusted-registry
+  namespace: giropops
+spec:
+  validationFailureAction: enforce
+  rules:
+  - name: trusted-registry
+    match:
+      resources:
+        kinds:
+        - Pod
+    validate:
+      message: "Imagem do container não é permitida"
+      pattern:
+        spec:
+          containers:
+          - name: "*"
+            image: "cgr.dev/chainguard/*"
